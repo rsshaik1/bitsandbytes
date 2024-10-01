@@ -1,0 +1,72 @@
+on:
+  workflow_dispatch:
+  #pull_request:
+  #  branches: [main, multi-backend-refactor]
+
+jobs:
+  run-tests:
+    runs-on: [CUDA-Linux-x64]
+    needs: build-cuda
+    strategy:
+      fail-fast: false
+      matrix:
+        torch_version: [
+        #  "2.0.1",
+        #  "2.1.2",
+        #  "2.2.2",
+          "2.3.1",
+          "2.4.1"
+        ]
+        python_version:
+          ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: shared_cuda*
+          merge-multiple: true
+          path: bitsandbytes/
+      - name: Show directory structure
+        run: ls -lR
+      - name: Show GPU information
+        run: nvidia-smi
+      - name: Set up Python ${{ matrix.python_version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python_version }}
+      - name: Install testing dependencies
+        run: |
+          pip install -r requirements-ci.txt
+          pip install -e .
+          pip install torch==${{ matrix.torch_version }}
+      - name: Show installed packages
+        run: pip freeze
+      - name: Run tests
+        run: pytest
+
+  build-cuda:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        cuda_version:
+          ["11.8.0", "12.1.1", "12.4.1"]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Build CUDA backend
+        run: bash .github/scripts/build-cuda.sh
+        env:
+          build_os: ubuntu
+          build_arch: x86_64
+          cuda_version: ${{ matrix.cuda_version }}
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+            name: shared_cuda${{ matrix.cuda_version }}
+            path: output/*
+            retention-days: 7
