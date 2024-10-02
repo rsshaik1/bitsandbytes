@@ -1,5 +1,7 @@
 on:
   workflow_dispatch:
+  push:
+    branches: [gpu-ci]
   #pull_request:
   #  branches: [main, multi-backend-refactor]
 
