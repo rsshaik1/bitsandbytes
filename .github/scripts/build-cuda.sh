@@ -2,9 +2,10 @@
 declare build_arch
 declare build_os
 declare cuda_version
+declare cuda_targets
 
 set -xeuo pipefail
-build_capability="50;52;60;61;70;75;80;86;89;90"
+build_capability=${cuda_targets} || "50;52;60;61;70;75;80;86;89;90"
 [[ "${cuda_version}" == 11.7.* ]] && build_capability=${build_capability%??????}
 [[ "${cuda_version}" == 11.8.* ]] && build_capability=${build_capability%???}
 [[ "${build_os}" = windows-* ]] && python3 -m pip install ninja

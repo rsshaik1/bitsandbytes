@@ -10,7 +10,8 @@ on:
 jobs:
   run-tests:
     runs-on:
-      group: CUDA-Linux-x64
+      labels: CUDA-Linux-x64
+      group: CUDA GPU runners
     needs: build-cuda
     strategy:
       fail-fast: false
@@ -57,9 +58,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        cuda_version:
-          ["11.8.0", "12.1.1", "12.4.1"]
-
+        cuda_version: ["11.8.0", "12.1.1", "12.4.1"]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -69,9 +68,10 @@ jobs:
           build_os: ubuntu
           build_arch: x86_64
           cuda_version: ${{ matrix.cuda_version }}
+          cuda_targets: "75;80"
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-            name: shared_cuda${{ matrix.cuda_version }}
-            path: output/*
-            retention-days: 7
+          name: shared_cuda${{ matrix.cuda_version }}
+          path: output/*
+          retention-days: 7
