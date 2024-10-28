@@ -16,14 +16,11 @@ jobs:
       fail-fast: false
       matrix:
         torch_version: [
-        #  "2.0.1",
-        #  "2.1.2",
-        #  "2.2.2",
-          "2.3.1",
-          "2.4.1"
+          "2.4.1",
+          "2.5.0"
         ]
         python_version:
-          ["3.8", "3.9", "3.10", "3.11", "3.12"]
+          ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - name: Checkout repo
@@ -67,10 +64,10 @@ jobs:
           build_os: ubuntu
           build_arch: x86_64
           cuda_version: ${{ matrix.cuda_version }}
-          cuda_targets: "75;80"
+          cuda_targets: "75"
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: shared_cuda${{ matrix.cuda_version }}
-          path: output/*
+          path: output/${{ env.build_os }}/${{ env.build_arch }}
           retention-days: 7
