@@ -40,7 +40,9 @@ jobs:
         with:
           python-version: ${{ matrix.python_version }}
           cache: pip
-          cache-dependency-path: ['requirements-ci.txt', 'setup.py']
+          cache-dependency-path: |
+            requirements-ci.txt
+            setup.py
           
       - name: Install testing dependencies
         run: |
