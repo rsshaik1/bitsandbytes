@@ -39,6 +39,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python_version }}
+          cache: pip
+          cache-dependency-path: ['requirements-ci.txt', 'setup.py']
+          
       - name: Install testing dependencies
         run: |
           pip install -r requirements-ci.txt
@@ -69,5 +72,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: shared_cuda${{ matrix.cuda_version }}
-          path: output/${{ env.build_os }}/${{ env.build_arch }}
+          path: output/${{ env.build_os }}/${{ env.build_arch }}/*
           retention-days: 7
