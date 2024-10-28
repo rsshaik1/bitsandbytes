@@ -74,5 +74,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: shared_cuda${{ matrix.cuda_version }}
-          path: output/${{ env.build_os }}/${{ env.build_arch }}/*
+          path: output/ubuntu/x86_64/*
           retention-days: 7
