@@ -11,7 +11,6 @@ jobs:
   run-tests:
     runs-on:
       labels: CUDA-Linux-x64
-      group: CUDA GPU runners
     needs: build-cuda
     strategy:
       fail-fast: false
